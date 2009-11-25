@@ -40,9 +40,10 @@
 
 #include <pthread.h>
 #include <termios.h>
-#include <string>
+#include <string.h>
 #include <sstream>
 #include <iostream>
+#include <sys/types.h>
 
 // #define DEBUG_SERIALCOMM
 // #define DEBUG_RAW_SERIALCOMM

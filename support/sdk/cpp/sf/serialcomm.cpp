@@ -42,6 +42,7 @@
 #include <sstream>
 #include <sys/time.h>
 #include <errno.h>
+#include <stdlib.h>
 
 using namespace std;
 

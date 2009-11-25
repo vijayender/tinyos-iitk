@@ -44,6 +44,7 @@
 #endif
 
 #include <iostream>
+#include <string.h>
 #include <stdint.h>
 
 #include "serialprotocol.h"

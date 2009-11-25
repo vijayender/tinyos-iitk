@@ -40,8 +40,9 @@
 #include <netdb.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <string.h>
+#include <stdlib.h>
 
-#include <string>
 #include <iostream>
 #include <sstream>
 #include <fstream>

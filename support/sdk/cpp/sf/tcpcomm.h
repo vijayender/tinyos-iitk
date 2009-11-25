@@ -41,7 +41,7 @@
 
 #include <pthread.h>
 #include <set>
-#include <string>
+#include <string.h>
 #include <sstream>
 
 // #define DEBUG_TCPCOMM
