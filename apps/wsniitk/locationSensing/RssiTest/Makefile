@@ -1,0 +1,2 @@
+COMPONENT=RssiTestAppC
+include $(MAKERULES)

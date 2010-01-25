@@ -1,0 +1,4 @@
+SENSORBOARD=mts300
+COMPONENT=TemperatureAppC
+include $(MAKERULES)
+
