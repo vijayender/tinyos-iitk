@@ -2,7 +2,7 @@
 # doesn't work from a conrib dir ...
 
 
-TOSCONTRIB?=/opt/tinyos-2.1.0/
+TOSCONTRIB?=../../../
 
 
 ifeq ($(SENSORBOARD),mts400)
