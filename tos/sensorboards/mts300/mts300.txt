@@ -1,0 +1,56 @@
+Accelerometer
+------------
+AccelConfigP.nc			HAL, RoundRobinArbitrator
+AccelP.nc			HPL
+AccelReadP.nc			Arbitrated read
+AccelReadStreamP.nc		Arbitrated read
+AccelXC.nc			HIL
+AccelXStreamC.nc		HIL
+AccelYC.nc			HIL
+AccelYStreamC.nc		HIL
+
+Magnetometer
+------------
+MagConfigP.nc			HAL, RoundRobinAribtrator
+Mag.nc				interface settings
+MagP.nc				HPL
+MagReadP.nc			Arbitrated read
+MagReadStreamP.nc		Arbitrated read
+MagXC.nc			HIL
+MagXStreamC.nc			HIL
+MagYC.nc			HIL
+MagYStreamC.nc			HIL
+
+Temperature
+------------
+ArbitratedPhotoDeviceP.nc
+ArbitratedTempDeviceP.nc
+PhotoC.nc			HIL
+PhotoTempControlP.nc		
+PhotoTempDeviceC.nc		
+PhotoTempP.nc			
+TempC.nc			HIL
+
+Onboard sensors
+------------
+DemoSensorC.nc
+DemoSensorStreamC.nc
+
+Mic
+------------
+MicC.nc				HIL
+MicDeviceP.nc			HAL,RoundRobinArbiter(non-deferred)
+MicP.nc				HPL
+MicReadP.nc			AribtratedRead (??) (Automatically requests resource and releases it after use)
+MicReadStreamP.nc		ArbitratedReadStream
+MicSetting.nc			interface to enable/disable interrupt (also fired), adjust gainVolume
+MicStreamC.nc			HIL (but provides mic settings)
+
+SensorMts300C.nc
+
+Sounder
+------------
+Mts300Sounder.nc		interface
+SounderC.nc			HIL
+SounderP.nc			HPL
+
