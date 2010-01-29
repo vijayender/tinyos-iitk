@@ -40,7 +40,7 @@
  * @author Phil Buonadonna <pbuonadonna@archrock.com>
  * @version $Revision: 1.4 $ $Date: 2006/12/12 18:23:45 $
  */
-#include <im2sb.h>
+#include <mts400.h>
 
 configuration HplSensirionSht11C {
   provides interface SplitControl;
@@ -50,12 +50,12 @@ configuration HplSensirionSht11C {
   provides interface GpioInterrupt as InterruptDATA;
 }
 implementation {
-  components MicaBusC,Atm128GpioInterruptC as INT3 ,HplAtm128InterruptC;
+  components MicaBusC,new Atm128GpioInterruptC() as interrupt ,HplAtm128InterruptC;
 
-  INT3.Atm128Interrupt = HplAtm128InterruptC.Int3;
+  interrupt.Atm128Interrupt -> HplAtm128InterruptC.Int3;
   DATA = MicaBusC.Int3;
   SCK = MicaBusC.PW3;
-  InterruptDATA = INT3.Interrupt;
+  InterruptDATA = interrupt.Interrupt;
 
   components new HplAdg715C(I2C_POWER_SWITCH_ADDR) as PowerSwitch;
   components new HplAdg715C(I2C_DATA_SWITCH_ADDR) as DataSwitch;
@@ -66,8 +66,11 @@ implementation {
   PowerSwitch.I2C->I2CPower;
   DataSwitch.I2C -> I2CData;
 
-  components HplSensirionSht11P, MTSGlobal;
+  components HplSensirionSht11P, MTSGlobalC;
   SplitControl = HplSensirionSht11P.SplitControl;
+  HplSensirionSht11P.MTSGlobal -> MTSGlobalC.SplitControl;
+  MTSGlobalC.PowerSwitch -> PowerSwitch;
+  MTSGlobalC.DataSwitch -> DataSwitch;
   HplSensirionSht11P.PowerSwitch -> PowerSwitch;
   HplSensirionSht11P.DataSwitch -> DataSwitch;
   

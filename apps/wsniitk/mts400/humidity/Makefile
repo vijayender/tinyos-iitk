@@ -1,0 +1,6 @@
+COMPONENT=humidityAppC
+#CFLAGS+=-DTOSH_DATA_LENGTH=31 -DPRINTF_BUFFER_SIZE=1024 -g -ggdb -O0 
+SENSORBOARD?=mts400
+
+include ../Makelocal
+include $(MAKERULES)
