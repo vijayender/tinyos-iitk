@@ -48,11 +48,13 @@ configuration HplSensirionSht11C {
   provides interface GeneralIO as DATA;
   provides interface GeneralIO as SCK;
   provides interface GpioInterrupt as InterruptDATA;
+  
+  uses interface SensirionSht11 as Humidity;
 }
 implementation {
   components MicaBusC,new Atm128GpioInterruptC() as interrupt ,HplAtm128InterruptC;
 
-  interrupt.Atm128Interrupt -> HplAtm128InterruptC.Int3;
+  interrupt.Atm128Interrupt -> HplAtm128InterruptC.Int7;
   DATA = MicaBusC.Int3;
   SCK = MicaBusC.PW3;
   InterruptDATA = interrupt.Interrupt;
@@ -73,6 +75,7 @@ implementation {
   MTSGlobalC.DataSwitch -> DataSwitch;
   HplSensirionSht11P.PowerSwitch -> PowerSwitch;
   HplSensirionSht11P.DataSwitch -> DataSwitch;
+  HplSensirionSht11P.Humidity = Humidity; /* Nasty fix */
   
   components new TimerMilliC();
   HplSensirionSht11P.Timer -> TimerMilliC;

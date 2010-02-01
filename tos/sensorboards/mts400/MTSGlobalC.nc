@@ -13,8 +13,7 @@ implementation{
 	return EALREADY;
       started = TRUE;
     }
-    call PowerSwitch.setAll(ALLOFF);
-    return SUCCESS;
+    return call PowerSwitch.setAll(ALLOFF);
   }
   
   event void PowerSwitch.setAllDone(error_t err){

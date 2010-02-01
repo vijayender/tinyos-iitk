@@ -14,6 +14,7 @@ module HplSensirionSht11P {
   uses interface Timer<TMilli>;
   uses interface Switch as PowerSwitch;
   uses interface Switch as DataSwitch;
+  uses interface SensirionSht11 as Humidity;
 }
 
 implementation {
@@ -64,7 +65,7 @@ implementation {
       }
     }else if(powerStatus == POWER_TURN_OFF){
       if(err == SUCCESS)
-	powerStatus == POWER_OFF;
+	powerStatus = POWER_OFF;
       signal SplitControl.stopDone(err);
     }
   }
@@ -72,15 +73,19 @@ implementation {
   event void DataSwitch.maskDone(error_t err){
     if( powerStatus == POWER_TURN_ON){
       if(err == SUCCESS){
-	powerStatus = POWER_ON;
+	call Humidity.reset();
       }
-      signal SplitControl.startDone(err);
+      //      signal SplitControl.startDone(err);
     } else if ( powerStatus == POWER_TURN_OFF){
       if(err == SUCCESS){
 	call PowerSwitch.set(PWR_HUMIDITY, 0);
       }else
 	signal SplitControl.stopDone(err);
     }
+  }
+
+  event void Humidity.resetDone(error_t err){
+    call Humidity.measureHumidity();
   }
 
   command error_t SplitControl.stop() {
@@ -97,4 +102,16 @@ implementation {
   event void PowerSwitch.getDone(error_t error, uint8_t value){}
   event void MTSGlobal.stopDone(error_t error){}
 
+
+  event void Humidity.measureHumidityDone(error_t result, uint16_t val) {
+    call Humidity.readStatusReg();
+  }
+  event void Humidity.measureTemperatureDone(error_t result, uint16_t val){}
+  event void Humidity.readStatusRegDone(error_t result, uint8_t val){
+    printf("status: %X\n",val);
+    if( result == SUCCESS )
+      powerStatus = POWER_ON;
+    signal SplitControl.startDone(result);
+  }
+  event void Humidity.writeStatusRegDone(error_t result){}
 }

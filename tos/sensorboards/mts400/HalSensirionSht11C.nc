@@ -47,7 +47,7 @@ configuration HalSensirionSht11C {
   provides interface SensirionSht11[ uint8_t client ];
 }
 implementation {
-  components new SensirionSht11LogicP();
+  components new SensirionSht11LogicP_mts400() as SensirionSht11LogicP;
   SensirionSht11 = SensirionSht11LogicP;
 
   components HplSensirionSht11C;
@@ -56,11 +56,12 @@ implementation {
   SensirionSht11LogicP.DATA -> HplSensirionSht11C.DATA;
   SensirionSht11LogicP.CLOCK -> HplSensirionSht11C.SCK;
   SensirionSht11LogicP.InterruptDATA -> HplSensirionSht11C.InterruptDATA;
+  HplSensirionSht11C.Humidity -> SensirionSht11LogicP.SensirionSht11[2];
 
   
-  components new TimerMilliC();
+  components new TimerMilliC(),LocalTimeMicroC;
   SensirionSht11LogicP.Timer -> TimerMilliC;
-
+  
   components NoLedsC;
   SensirionSht11LogicP.Leds -> NoLedsC;
 }
