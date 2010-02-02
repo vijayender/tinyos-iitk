@@ -1,4 +1,4 @@
 PFLAGS+=-DRF230_DEF_RFPOWER=0
-CFLAGS += -I$(TOSDIR)/lib/radioPrintf
+CFLAGS += -I$(TOSDIR)/lib/printf
 COMPONENT=mote1AppC
 include $(MAKERULES)

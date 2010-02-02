@@ -13,6 +13,8 @@ typedef nx_struct control_msg {
   nx_uint16_t tmp[5];
 } control_msg_t;
 
+#define MAXRETRIES 200
+
 enum {
   AM_CONTROL_MSG = 6,
 };

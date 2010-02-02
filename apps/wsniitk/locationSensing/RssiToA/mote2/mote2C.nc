@@ -8,6 +8,7 @@ module mote2C {
     interface Receive;
     interface AMSend;
     interface Timer<TMilli>;
+    interface Timer<TMilli> as Timer2;
     interface SplitControl as AMControl;
     interface PacketTimeStamp<TRF230, uint32_t> as PacketTimeStampRadio;
     interface Packet;
@@ -67,10 +68,16 @@ implementation {
       tx_tmsp = call PacketTimeStampRadio.timestamp(bufPtr);
       //      tx_pwr = call PacketTransmitPower.get(bufPtr);
     }else {
-      retr++;
-      call PacketAcknowledgements.requestAck(&packet);
-      call AMSend.send(3,&packet,sizeof(control_msg_t));
+      if(retr < MAXRETRIES){
+	retr++;
+	call Timer2.startOneShot(10);
+      }
     }
+  }
+
+  event void Timer2.fired(){
+    call PacketAcknowledgements.requestAck(&packet);
+    call AMSend.send(3,&packet,sizeof(control_msg_t));
   }
 
   event message_t* Receive.receive(message_t* bufPtr, 

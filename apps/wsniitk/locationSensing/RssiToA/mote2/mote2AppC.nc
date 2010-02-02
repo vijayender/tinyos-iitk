@@ -7,6 +7,7 @@ implementation {
   components new AMSenderC(AM_CONTROL_MSG);
   components new AMReceiverC(AM_CONTROL_MSG);
   components new TimerMilliC();
+  components new TimerMilliC() as Timer2;
   components new VoltageC();
   components ActiveMessageC;
   components  RF230ActiveMessageC;
@@ -18,6 +19,7 @@ implementation {
   App.AMControl -> ActiveMessageC;
   App.Leds -> LedsC;
   App.Timer -> TimerMilliC;
+  App.Timer2 -> Timer2;
   App.Packet -> AMSenderC;
   App.PacketTimeStampRadio -> RF230ActiveMessageC.PacketTimeStampRadio;
   App.PacketRSSI -> RF230ActiveMessageC.PacketRSSI;
