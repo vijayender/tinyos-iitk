@@ -1,0 +1,3 @@
+COMPONENT=PC2moteAppC
+include $(MAKERULES)
+
