@@ -22,6 +22,7 @@ implementation {
   uint8_t rssi;
   //  uint8_t tx_pwr;
   uint8_t lqi;
+  uint8_t retr;
   uint16_t v;
   message_t packet;
   uint32_t tx_tmsp;
@@ -53,7 +54,9 @@ implementation {
       rcm->tx_tmsp = tx_tmsp;
       rcm->rx_tmsp = rx_tmsp;
       rcm->v = v;
+      rcm->retr = retr;
       call PacketAcknowledgements.requestAck(&packet);
+      retr = 0;
       call AMSend.send(3,&packet,sizeof(control_msg_t));
     }
     // counter++; Shall be done in Send Done
@@ -64,6 +67,7 @@ implementation {
       tx_tmsp = call PacketTimeStampRadio.timestamp(bufPtr);
       //      tx_pwr = call PacketTransmitPower.get(bufPtr);
     }else {
+      retr++;
       call PacketAcknowledgements.requestAck(&packet);
       call AMSend.send(3,&packet,sizeof(control_msg_t));
     }

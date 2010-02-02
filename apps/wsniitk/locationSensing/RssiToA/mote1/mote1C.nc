@@ -1,6 +1,7 @@
 
 #include <HplRF230.h>
 #include "../RssiToA.h"
+#include "../lightdecoder/RssiTest.h"
 #define NUM 10
 
 module mote1C {
@@ -8,6 +9,7 @@ module mote1C {
     interface Leds;
     interface Boot;
     interface Receive;
+    interface Receive as controller;
     interface AMSend;
     interface Timer<TMilli>;
     interface SplitControl as AMControl;
@@ -30,6 +32,7 @@ implementation {
   uint8_t rssi[2][NUM+1];
   uint16_t v[2][NUM+1];
   uint8_t lqi[2][NUM+1];
+  uint8_t retr[2][NUM+1];
   //  uint8_t tx_pwr[2][NUM+1];
   bool rssiTransport = FALSE;
   
@@ -41,7 +44,7 @@ implementation {
 
   event void AMControl.startDone(error_t err){
     if(err == SUCCESS){
-      call Timer.startOneShot(1000);
+      //      call Timer.startOneShot(1000);
       call Leds.led0On();
     } else 
       call AMControl.start();
@@ -51,6 +54,7 @@ implementation {
   }
 
   event void Timer.fired(){
+    call Leds.led2Off();
     if(rssiTransport){
       post sendData();
       return;
@@ -63,6 +67,7 @@ implementation {
       if(rcm  != NULL){
 	rcm->counter = counter;
 	call PacketAcknowledgements.requestAck(&packet);
+	retr[0][counter] = 0;
 	call AMSend.send(4,&packet,sizeof(control_msg_t));
 	//	call Leds.led1Toggle();
       }
@@ -76,8 +81,20 @@ implementation {
   }
 
   task void sendData(){
-    if(counter2 < 2*NUM){
-      control_msg_t* rcm;
+    int toa;
+    if(counter2 < NUM){
+      call Leds.led1Toggle();
+      //Compute the data and print using printf
+      toa = tx_tms[0][counter2]-rx_tms[0][counter2]+tx_tms[1][counter2]-rx_tms[1][counter2];
+      printf("Data counter %d, toa %d, rssi %d~%d, lqi %d~%d, retr %d~%d, v %d~%d \n",counter2,toa,
+	     rssi[0][counter2],rssi[1][counter2],
+	     lqi[0][counter2],lqi[1][counter2],
+	     retr[0][counter2],retr[1][counter2],
+	     v[0][counter2],v[1][counter2]);
+      printfflush();
+      counter2++;
+      call Timer.startOneShot(100);
+      /*control_msg_t* rcm;
       rcm = (control_msg_t*) call Packet.getPayload(&packet,sizeof(control_msg_t));
       if(rcm  != NULL){
 	int i,j;
@@ -90,12 +107,14 @@ implementation {
 	rcm->v = v[i][j];
 	//	rcm->tx_pwr = tx_pwr[i][j];
 	rcm->lqi = lqi[i][j];
+	rcm->retr =retr[i][j];
 	call Leds.led1Toggle();
 	counter2++;
 	call AMSend.send(1,&packet,sizeof(control_msg_t));
-      }
+	}*/
     }else{
-      call Leds.led0On();
+      counter=0;counter2=0;rssiTransport=FALSE;
+      call Leds.led2On();
     }
   }
 
@@ -108,9 +127,26 @@ implementation {
 	tx_tms[0][counter]=tx_tmsp;
 	//call Leds.led2Toggle();
       }else{
+	retr[0][counter]++;
 	call PacketAcknowledgements.requestAck(&packet);
 	call AMSend.send(4,&packet,sizeof(control_msg_t));
       }
+    }
+  }
+
+  event message_t* controller.receive(message_t* bufPtr, void* payload, uint8_t len){
+    if (len!= sizeof(command_msg_t)){
+      return bufPtr;
+    }else{
+      command_msg_t* rcm = (command_msg_t*)payload;
+      switch (rcm->control){
+      case 1:
+	call Timer.startOneShot(1000);	
+	break;
+      default:
+	printf("Shouldn't be here\n");
+      }
+      return bufPtr;
     }
   }
 
@@ -125,6 +161,7 @@ implementation {
       v[1][counter] = rcm->v;
       rx_tmsp = call PacketTimeStampRadio.timestamp(bufPtr);
       rx_tms[1][counter] = rx_tmsp;
+      retr[1][counter] = rcm->retr;
       if(counter>0){
 	tx_tms[1][counter-1] = rcm->tx_tmsp;
 	//	tx_pwr[1][counter-1] = rcm->tx_pwr;

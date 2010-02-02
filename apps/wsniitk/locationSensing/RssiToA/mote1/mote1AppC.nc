@@ -1,11 +1,12 @@
 #include "../RssiToA.h"
-
+#include "../lightdecoder/RssiTest.h"
 configuration mote1AppC {}
 
 implementation {
   components MainC, mote1C as App, LedsC;
   components new AMSenderC(AM_CONTROL_MSG);
   components new AMReceiverC(AM_CONTROL_MSG);
+  components new AMReceiverC(AM_RADIO_MSG) as controller;
   components new TimerMilliC();
   components new VoltageC();
   components ActiveMessageC;
@@ -22,6 +23,7 @@ implementation {
   App.PacketTimeStampRadio -> RF230ActiveMessageC.PacketTimeStampRadio;
   App.PacketRSSI -> RF230ActiveMessageC.PacketRSSI;
   App.PacketAcknowledgements -> RF230ActiveMessageC;
+  App.controller -> controller;
   //  App.PacketTransmitPower -> RF230ActiveMessageC.PacketTransmitPower;
   App.PacketLinkQuality -> RF230ActiveMessageC.PacketLinkQuality;
   App.Voltage -> VoltageC;

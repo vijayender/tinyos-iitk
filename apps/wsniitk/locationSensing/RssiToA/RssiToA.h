@@ -7,6 +7,7 @@ typedef nx_struct control_msg {
   nx_uint32_t rx_tmsp;
   nx_uint8_t rssi;
   nx_uint8_t lqi;
+  nx_uint8_t retr;
   //  nx_uint8_t tx_pwr;
   nx_uint16_t v;
   nx_uint16_t tmp[5];
