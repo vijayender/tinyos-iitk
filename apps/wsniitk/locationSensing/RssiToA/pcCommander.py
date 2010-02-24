@@ -41,11 +41,12 @@ if(command == "get"):
     if(am.write(rp,9)):
         print "Success issuing command get"
         p = am.read()
+        print "{0:7} {1:7} {2:7} {3:7} {4:7} {5:7} {6:7} {7:7} {8:7} {9:7}".format("S.no","toa","rss1","rss2","lqi1","lqi2","ret1","ret2","v1","v2")
         while p:
             m = pcPacket(p.data);
             if m.v2 == 0:
                 break;
-            print m;
+            print "{0:7} {1:7} {2:7} {3:7} {4:7} {5:7} {6:7} {7:7} {8:7} {9:7}".format(m.counter,m.toa,m.rssi1,m.rssi2,m.lqi1,m.lqi2,m.retr1,m.retr2,m.v1,m.v2)
             p = am.read()
     else:
         print ":( no hello"
